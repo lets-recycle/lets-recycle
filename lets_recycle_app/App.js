@@ -1,21 +1,43 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { createAppContainer, createSwitchNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
+// import { createBottomTabNavigator } from 'react-navigation-tabs';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+// import AccountScreen from './src/screens/AccountScreen';
+import SigninScreen from './src/screen/SigninScreen';
+import SignupScreen from './src/screen/SignupScreen';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+import { Provider as AuthProvider } from './src/context/AuthContext';
+import { setNavigator } from './src/navigationRef';
+import ResolveAuthScreen from './src/screen/ResolveAuthScreen';
+
+
+
+const switchNavigator = createSwitchNavigator({
+  ResolveAuth: ResolveAuthScreen,
+  loginFlow: createStackNavigator({
+    Signup: SignupScreen,
+    Signin: SigninScreen,
+  }),
+  // mainFlow: createBottomTabNavigator({
+  
+  // }),
 });
+
+const App = createAppContainer(switchNavigator);
+
+export default () => {
+  return (
+    <TrackProvider>
+      <LocationProvider>
+        <AuthProvider>
+          <App
+            ref={(navigator) => {
+              setNavigator(navigator);
+            }}
+          />
+        </AuthProvider>
+      </LocationProvider>
+    </TrackProvider>
+  );
+};
