@@ -28,8 +28,7 @@ const App = createAppContainer(switchNavigator);
 
 export default () => {
   return (
-    <TrackProvider>
-      <LocationProvider>
+    
         <AuthProvider>
           <App
             ref={(navigator) => {
@@ -37,7 +36,6 @@ export default () => {
             }}
           />
         </AuthProvider>
-      </LocationProvider>
-    </TrackProvider>
+    
   );
 };
