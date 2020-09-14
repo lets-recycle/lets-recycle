@@ -10,8 +10,11 @@ const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText }) => {
   return (
     <>
       <Spacer>
-        <Text h3>{headerText}</Text>
+        <Text h3 
+        style={{alignSelf: "center"}}
+         >{headerText}</Text>
       </Spacer>
+      <Spacer/>
       <Input
         label="Email"
         value={email}
