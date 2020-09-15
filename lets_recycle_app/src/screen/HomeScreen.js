@@ -10,16 +10,14 @@ const HomeScreen = () => {
   return (
     <SafeAreaView forceInset={{ top: 'always' }}>
       <Text style={{ fontSize: 48 }}>HomeScreen</Text>
-      <Spacer>
-        <Button title="Sign Out" onPress={signout} />
-      </Spacer>
+      
     </SafeAreaView>
   );
 };
 
-AccountScreen.navigationOptions = {
+HomeScreen.navigationOptions = {
   title: 'Home',
-  tabBarIcon: <FontAwesome name="gear" size={20} />
+  tabBarIcon: <FontAwesome name="home" size={24} color="black" />
 };
 
 const styles = StyleSheet.create({});

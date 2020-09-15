@@ -7,20 +7,21 @@ const authReducer = (state, action) => {
     case 'add_error':
       return { ...state, errorMessage: action.payload };
     case 'signin':
-      return { errorMessage: '', token: action.payload };
+      return { errorMessage: '', user: action.payload };
     case 'clear_error_message':
       return { ...state, errorMessage: '' };
     case 'signout':
-      return { token: null, errorMessage: '' };
+      return { user: null, errorMessage: '' };
     default:
       return state;
   }
 };
 
 const tryLocalSignin = dispatch => async () => {
-  const token = await AsyncStorage.getItem('token');
-  if (token) {
-    dispatch({ type: 'signin', payload: token });
+  // const token = await AsyncStorage.getItem('token');
+  user = await firebase.auth().currentUser
+  if (user) {
+    dispatch({ type: 'signin', payload: user });
   } else {
     navigate('Signup');
   }
@@ -32,7 +33,7 @@ const clearErrorMessage = dispatch => () => {
 
 const signup = dispatch => async ({ email, password }) => {
   try {
-      firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+      await firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
         console.log(error[0])
         console.log("fail");
            dispatch({
@@ -40,6 +41,9 @@ const signup = dispatch => async ({ email, password }) => {
             payload: error[0]
           });
       });
+      console.log("token",firebase.auth().currentUser);
+      dispatch({ type: 'signin', payload: firebase.auth().currentUser });
+      navigate('Home');
   } catch (err) {
     console.log(err)
     dispatch({
@@ -51,7 +55,14 @@ const signup = dispatch => async ({ email, password }) => {
 
 const signin = dispatch => async ({ email, password }) => {
   try {
-    firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+    await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+  .then(async function() {
+    // Existing and future Auth states are now persisted in the current
+    // session only. Closing the window would clear any existing state even
+    // if a user forgets to sign out.
+    // ...
+    // New sign-in will be persisted with session persistence.
+     await firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
       console.log("fail");
       dispatch({
          type: 'add_error',
@@ -59,6 +70,16 @@ const signin = dispatch => async ({ email, password }) => {
        });
    });
    console.log("done");
+   console.log("token",firebase.auth().currentUser)
+   dispatch({ type: 'signin', payload: firebase.auth().currentUser });
+   
+  })
+  .catch(function(error) {
+    // Handle Errors here.
+    var errorCode = error.code;
+    var errorMessage = error.message;
+  });
+   navigate('Home');
   } catch (err) {
     dispatch({
       type: 'add_error',
@@ -76,5 +97,5 @@ const signout = dispatch => async () => {
 export const { Provider, Context } = createDataContext(
   authReducer,
   { signin, signout, signup, clearErrorMessage, tryLocalSignin },
-  { token: null, errorMessage: '' }
+  { user: null, errorMessage: '' }
 );
