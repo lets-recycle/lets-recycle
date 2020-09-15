@@ -2,6 +2,9 @@ import { AsyncStorage } from 'react-native';
 import createDataContext from './createDataContext';
 import { navigate } from '../navigationRef';
 import firebase from 'firebase';
+
+const API = 'https://lets-recycle-67594.firebaseio.com'
+
 const authReducer = (state, action) => {
   switch (action.type) {
     case 'add_error':
@@ -12,6 +15,8 @@ const authReducer = (state, action) => {
       return { ...state, errorMessage: '' };
     case 'signout':
       return { user: null, errorMessage: '' };
+    case 'addToUser':
+      return { user: { ...state.user, ...action.payload }, errorMessage: '' };
     default:
       return state;
   }
@@ -22,6 +27,19 @@ const tryLocalSignin = dispatch => async () => {
   user = await firebase.auth().currentUser
   if (user) {
     dispatch({ type: 'signin', payload: user });
+    (async () => {
+      let results = await fetch(`${API}/users.json?orderBy="id"&equalTo="${user.uid}"`, {
+        method: 'GET',
+        mode: 'cors',
+        headers: new Headers({
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }),
+      });
+      let res = await results.json();
+      dispatch({ type: 'addToUser', payload: res[Object.keys(res)[0]] });
+
+    })();
   } else {
     navigate('Signup');
   }
@@ -33,7 +51,30 @@ const clearErrorMessage = dispatch => () => {
 
 const signup = dispatch => async ({ email, password }) => {
   try {
-    await firebase.auth().createUserWithEmailAndPassword(email, password).catch(function (error) {
+    await firebase.auth().createUserWithEmailAndPassword(email, password).then(() => {
+
+      let user = firebase.auth().currentUser;
+      dispatch({ type: 'signin', payload: firebase.auth().currentUser });
+      (async () => {
+        await fetch(`${API}/users.json`, {
+          method: 'POST',
+          mode: 'cors',
+          headers: new Headers({
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }),
+          body: JSON.stringify({
+            "id": user.uid,
+            "location": " no location",
+            "balance": '0',
+            "phoneNumber": 'no number',
+          })
+        });
+      })();
+
+      navigate('Home');
+
+    }).catch(function (error) {
       console.log(error[0])
       console.log("fail");
       dispatch({
@@ -41,9 +82,8 @@ const signup = dispatch => async ({ email, password }) => {
         payload: error[0]
       });
     });
-    console.log("token", firebase.auth().currentUser);
-    dispatch({ type: 'signin', payload: firebase.auth().currentUser });
-    navigate('Home');
+    // console.log("token", firebase.auth().currentUser);
+
   } catch (err) {
     console.log(err)
     dispatch({
@@ -69,10 +109,23 @@ const signin = dispatch => async ({ email, password }) => {
             payload: 'Something went wrong with sign in'
           });
         });
-        console.log("done");
-        console.log("token", firebase.auth().currentUser)
+        // console.log("done");
+        // console.log("token", firebase.auth().currentUser)
+        let user = firebase.auth().currentUser;
         dispatch({ type: 'signin', payload: firebase.auth().currentUser });
+        (async () => {
+          let results = await fetch(`${API}/users.json?orderBy="id"&equalTo="${user.uid}"`, {
+            method: 'GET',
+            mode: 'cors',
+            headers: new Headers({
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            }),
+          });
+          let res = await results.json();
+          dispatch({ type: 'addToUser', payload: res[Object.keys(res)[0]] });
 
+        })();
       })
       .catch(function (error) {
         // Handle Errors here.
@@ -96,20 +149,50 @@ const signout = dispatch => async () => {
 
 const update = dispatch => async (obj) => {
   // await AsyncStorage.removeItem('token');
-  console.log("obj---------->",obj)
+  // console.log("obj---------->", obj)
   var user = firebase.auth().currentUser;
-  await user.updateProfile({...user,...obj}).then(function () {
+
+  await user.updateProfile({ ...user, ...obj }).then(function () {
     // Update successful.
-  //   dispatch({ type: 'signin' });
-   navigate('Profile');
+    (async () => {
+      let results = await fetch(`${API}/users.json?orderBy="id"&equalTo="${user.uid}"`, {
+        method: 'GET',
+        mode: 'cors',
+        headers: new Headers({
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }),
+      });
+      let res = await results.json();
+      // console.log({ ...res[Object.keys(res)[0]], ...obj }, 'pppppppppppppppppp');
+      await fetch(`${API}/users/${Object.keys(res)[0]}.json`, {
+        method: 'PUT',
+        mode: 'cors',
+        headers: new Headers({
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }),
+        body: JSON.stringify({ ...res[Object.keys(res)[0]], ...obj })
+      });
+      dispatch({ type: 'addToUser', payload: { ...res[Object.keys(res)[0]], ...obj } });
+    })();
+
+    navigate('Profile');
   }).catch(function (error) {
     // An error happened.
+    console.log('eeeeeeeeeee', error);
   });
-  
+
 };
+
+
+
+
+
+
 
 export const { Provider, Context } = createDataContext(
   authReducer,
-  { signin, signout, signup, clearErrorMessage, tryLocalSignin,update },
+  { signin, signout, signup, clearErrorMessage, tryLocalSignin, update },
   { user: null, errorMessage: '' }
 );
