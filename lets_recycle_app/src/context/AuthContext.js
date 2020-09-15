@@ -33,17 +33,17 @@ const clearErrorMessage = dispatch => () => {
 
 const signup = dispatch => async ({ email, password }) => {
   try {
-      await firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
-        console.log(error[0])
-        console.log("fail");
-           dispatch({
-            type: 'add_error',
-            payload: error[0]
-          });
+    await firebase.auth().createUserWithEmailAndPassword(email, password).catch(function (error) {
+      console.log(error[0])
+      console.log("fail");
+      dispatch({
+        type: 'add_error',
+        payload: error[0]
       });
-      console.log("token",firebase.auth().currentUser);
-      dispatch({ type: 'signin', payload: firebase.auth().currentUser });
-      navigate('Home');
+    });
+    console.log("token", firebase.auth().currentUser);
+    dispatch({ type: 'signin', payload: firebase.auth().currentUser });
+    navigate('Home');
   } catch (err) {
     console.log(err)
     dispatch({
@@ -56,30 +56,30 @@ const signup = dispatch => async ({ email, password }) => {
 const signin = dispatch => async ({ email, password }) => {
   try {
     await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-  .then(async function() {
-    // Existing and future Auth states are now persisted in the current
-    // session only. Closing the window would clear any existing state even
-    // if a user forgets to sign out.
-    // ...
-    // New sign-in will be persisted with session persistence.
-     await firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
-      console.log("fail");
-      dispatch({
-         type: 'add_error',
-         payload: 'Something went wrong with sign in'
-       });
-   });
-   console.log("done");
-   console.log("token",firebase.auth().currentUser)
-   dispatch({ type: 'signin', payload: firebase.auth().currentUser });
-   
-  })
-  .catch(function(error) {
-    // Handle Errors here.
-    var errorCode = error.code;
-    var errorMessage = error.message;
-  });
-   navigate('Home');
+      .then(async function () {
+        // Existing and future Auth states are now persisted in the current
+        // session only. Closing the window would clear any existing state even
+        // if a user forgets to sign out.
+        // ...
+        // New sign-in will be persisted with session persistence.
+        await firebase.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
+          console.log("fail");
+          dispatch({
+            type: 'add_error',
+            payload: 'Something went wrong with sign in'
+          });
+        });
+        console.log("done");
+        console.log("token", firebase.auth().currentUser)
+        dispatch({ type: 'signin', payload: firebase.auth().currentUser });
+
+      })
+      .catch(function (error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+      });
+    navigate('Home');
   } catch (err) {
     dispatch({
       type: 'add_error',
@@ -89,13 +89,27 @@ const signin = dispatch => async ({ email, password }) => {
 };
 
 const signout = dispatch => async () => {
-  await AsyncStorage.removeItem('token');
+  // await AsyncStorage.removeItem('token');
   dispatch({ type: 'signout' });
   navigate('loginFlow');
 };
 
+const update = dispatch => async (obj) => {
+  // await AsyncStorage.removeItem('token');
+  console.log("obj---------->",obj)
+  var user = firebase.auth().currentUser;
+  await user.updateProfile({...user,...obj}).then(function () {
+    // Update successful.
+  //   dispatch({ type: 'signin' });
+   navigate('Profile');
+  }).catch(function (error) {
+    // An error happened.
+  });
+  
+};
+
 export const { Provider, Context } = createDataContext(
   authReducer,
-  { signin, signout, signup, clearErrorMessage, tryLocalSignin },
+  { signin, signout, signup, clearErrorMessage, tryLocalSignin,update },
   { user: null, errorMessage: '' }
 );

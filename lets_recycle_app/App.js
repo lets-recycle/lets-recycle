@@ -2,7 +2,7 @@ import React , {useEffect} from 'react';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
-
+import { MaterialIcons } from '@expo/vector-icons';
 import AccountScreen from './src/screen/AccountScreen';
 import SigninScreen from './src/screen/SigninScreen';
 import SignupScreen from './src/screen/SignupScreen';
@@ -11,6 +11,7 @@ import { Provider as AuthProvider } from './src/context/AuthContext';
 import { setNavigator } from './src/navigationRef';
 import ResolveAuthScreen from './src/screen/ResolveAuthScreen';
 import HomeScreen from './src/screen/HomeScreen';
+import Edit from './src/screen/Edit';
 var firebase = require('firebase');
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -27,6 +28,7 @@ const firebaseConfig = {
 
  
 
+
 const switchNavigator = createSwitchNavigator({
   intro,
   ResolveAuth: ResolveAuthScreen,
@@ -38,6 +40,7 @@ const switchNavigator = createSwitchNavigator({
   Home:HomeScreen,
   Profile:AccountScreen,
   }),
+  Edit,
 });
 
 const App = createAppContainer(switchNavigator);
