@@ -1,28 +1,40 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, Image, Button, Dimensions } from 'react-native';
+import React, { useState,useEffect } from 'react';
+import { StyleSheet, View, Text, Image, Button, Dimensions ,AsyncStorage} from 'react-native';
 import Swiper from "react-native-web-swiper";
+import { navigate } from '../navigationRef';
+import Spacer from '../components/Spacer';
 
 export default function steps() {
     const { width, height } = Dimensions.get('window');
-    const signInScreen = () => {
-        console.log('....')
+
+    useEffect(() => {
+        const intro = AsyncStorage.getItem('intro');
+        if(intro === "true"){
+            navigate('ResolveAuth');
+        }
+      }, []);
+
+    const signInScreen = async () => {
+        await AsyncStorage.setItem('intro', "true");
+        navigate('Signin');
     }
     return (
         <View style={styles.container}>
             <Swiper>
                 <View style={{ width, height }}>
-                    <Image source={require('../assets/Recycling.jpg')} style={styles.imageStyle} />
+                    <Image source={require('../../assets/logo.png')} style={styles.imageStyle} />
                     <View style={styles.wrapper}>
                         <Text style={styles.header}>Step one</Text>
                         <Text style={styles.paragraph}>
                             Group all your recyclable waste into groups according to their type
                         </Text>
                     </View>
+                    <Spacer/>
                 </View>
                 <View style={{ width, height }}>
                     <Image
-                        source={require('../assets/rubbish.jpg')}
-                        style={styles.img2}
+                        source={require('../../assets/logo.png')}
+                        style={styles.imageStyle}
                     />
                     <View style={styles.wrapper}>
                         <Text style={styles.header}>Step two</Text>
@@ -30,10 +42,11 @@ export default function steps() {
                             Choose the type that you want to recycle from the list in the application
                         </Text>
                     </View>
+                    <Spacer/>
                 </View>
                 <View style={{ width, height }}>
                     <Image
-                        source={require('../assets/phone.png')}
+                        source={require('../../assets/logo.png')}
                         style={styles.imageStyle}
                     />
                     <View style={styles.wrapper}>
@@ -41,17 +54,19 @@ export default function steps() {
                         <Text style={styles.paragraph}>
                             Wait for a call from one of our workers to visit you and collect the waste from you </Text>
                     </View>
+                    <Spacer/>
                 </View>
-                <View style={{ width, height }}>
+                <View style={{ width, height: height-10 }}>
                     <Image
-                        source={require('../assets/coins.jpg')}
+                        source={require('../../assets/logo.png')}
                         style={styles.imageStyle}
                     />
                     <View style={styles.wrapper}>
                         <Text style={styles.header}>Step four</Text>
                         <Text style={styles.paragraph}>Thus, your points will increase for which you will be rewarded for your recycle</Text>
                     </View>
-                    <Button title='Get Started' style={styles.button} color="#008000" onPress={signInScreen} />
+                    <Button title='Get Started' style={styles.button1} color="#008000" onPress={signInScreen} />
+                    <Spacer/>
                 </View>
             </Swiper>
         </View>
@@ -59,13 +74,15 @@ export default function steps() {
 }
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        justifyContent:"space-around"
     },
     imageStyle: {
         height: 280,
-        width: 410,
-        marginTop: 50,
-        marginBottom: 50
+        // width: 410,
+        // marginTop: 50,
+        // marginBottom: 50,
+        flex:1
     },
     img2: {
         height: 200,
@@ -103,6 +120,12 @@ const styles = StyleSheet.create({
         width: 10,
         borderRadius: 10 / 2,
         backgroundColor: '#0898A0',
+        marginLeft: 10,
+    },
+    button1: {
+        height: 100,
+        marginBottom: 50,
+        zIndex:1000,
         marginLeft: 10,
     },
 });

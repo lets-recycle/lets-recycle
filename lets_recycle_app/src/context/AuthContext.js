@@ -1,7 +1,7 @@
 import { AsyncStorage } from 'react-native';
 import createDataContext from './createDataContext';
 import { navigate } from '../navigationRef';
-
+import firebase from 'firebase';
 const authReducer = (state, action) => {
   switch (action.type) {
     case 'add_error':
@@ -32,8 +32,16 @@ const clearErrorMessage = dispatch => () => {
 
 const signup = dispatch => async ({ email, password }) => {
   try {
-    
+      firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+        console.log(error[0])
+        console.log("fail");
+           dispatch({
+            type: 'add_error',
+            payload: error[0]
+          });
+      });
   } catch (err) {
+    console.log(err)
     dispatch({
       type: 'add_error',
       payload: 'Something went wrong with sign up'
@@ -43,7 +51,14 @@ const signup = dispatch => async ({ email, password }) => {
 
 const signin = dispatch => async ({ email, password }) => {
   try {
-   
+    firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+      console.log("fail");
+      dispatch({
+         type: 'add_error',
+         payload: 'Something went wrong with sign in'
+       });
+   });
+   console.log("done");
   } catch (err) {
     dispatch({
       type: 'add_error',
