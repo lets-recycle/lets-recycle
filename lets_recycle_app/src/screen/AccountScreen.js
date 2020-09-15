@@ -22,6 +22,7 @@ const AccountScreen = ({ navigation }) => {
       </TouchableOpacity>
       <Text >name : {state.user.displayName || ''}</Text>
       <Text >phoneNumber : {state.user.phoneNumber || ''}</Text>
+      <Text >balance : {state.user.balance || ''}</Text>
       <Spacer>
         <Button title="Sign Out" onPress={signout} />
       </Spacer>
