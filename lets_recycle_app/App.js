@@ -12,6 +12,7 @@ import { setNavigator } from './src/navigationRef';
 import ResolveAuthScreen from './src/screen/ResolveAuthScreen';
 import HomeScreen from './src/screen/HomeScreen';
 import Edit from './src/screen/Edit';
+import loader from './src/screen/Loader';
 var firebase = require('firebase');
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -31,6 +32,7 @@ const firebaseConfig = {
 
 
 const switchNavigator = createSwitchNavigator({
+  loader,
   intro,
   ResolveAuth: ResolveAuthScreen,
   loginFlow: createStackNavigator({
