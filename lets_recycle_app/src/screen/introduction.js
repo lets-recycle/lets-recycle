@@ -22,7 +22,7 @@ export default function steps() {
         <View style={styles.container}>
             <Swiper>
                 <View style={{ width, height }}>
-                    <Image source={require('../../assets/logo.png')} style={styles.imageStyle} />
+                    <Image source={require('../../assets/Recycling.jpg')} style={styles.imageStyle} />
                     <View style={styles.wrapper}>
                         <Text style={styles.header}>Step one</Text>
                         <Text style={styles.paragraph}>
@@ -33,7 +33,7 @@ export default function steps() {
                 </View>
                 <View style={{ width, height }}>
                     <Image
-                        source={require('../../assets/logo.png')}
+                        source={require('../../assets/types.jpg')}
                         style={styles.imageStyle}
                     />
                     <View style={styles.wrapper}>
@@ -46,7 +46,7 @@ export default function steps() {
                 </View>
                 <View style={{ width, height }}>
                     <Image
-                        source={require('../../assets/logo.png')}
+                        source={require('../../assets/phone.png')}
                         style={styles.imageStyle}
                     />
                     <View style={styles.wrapper}>
@@ -58,7 +58,7 @@ export default function steps() {
                 </View>
                 <View style={{ width, height: height-10 }}>
                     <Image
-                        source={require('../../assets/logo.png')}
+                        source={require('../../assets/coins.jpg')}
                         style={styles.imageStyle}
                     />
                     <View style={styles.wrapper}>
@@ -79,10 +79,10 @@ const styles = StyleSheet.create({
     },
     imageStyle: {
         height: 280,
-        // width: 410,
-        // marginTop: 50,
-        // marginBottom: 50,
-        flex:1
+        width: '100%',
+        marginTop: 50,
+        marginBottom: 50,
+        // flex:1
     },
     img2: {
         height: 200,

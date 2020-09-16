@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import { View, Image, Text, StyleSheet } from 'react-native';
-const LoaderScreen = ({ image }) => {
+const LoaderScreen = ({ image,navigation }) => {
     const {imageState,setImage} = useState(image||'logo.ping')
     let path =`../../assets/${imageState}`;
+
+   setTimeout(()=>{
+    navigation.navigate('intro');
+   },4000) ;
+
     return (
         <View style={styles.container}>
             <Image style={styles.image} source={ require('../../assets/logo.png') } />
