@@ -9,32 +9,28 @@ import { Context as AuthContext } from '../context/AuthContext';
 import { StyleSheet, Text, View, FlatList,Alert, Image, TouchableOpacity} from 'react-native';
 import Card from '../components/Card'
 
-// import { Root, Popup } from 'popup-ui';
+import { Root, Popup } from 'popup-ui';
 
 const API = 'https://lets-recycle-67594.firebaseio.com'
 
 const HomeScreen = () => {
   const { state } = useContext(AuthContext);
-  const [modal, setModal] = useState(false);
   const [type, setType] = useState('');
 
   const wasteTypes = [
     { img: require('../../assets/metal3.jpg'), id: 1, title: 'Metal' },
     { img: require('../../assets/plastic2.jpg'), id: 2, title: 'Plastic' },
-    { img: require('../../assets/paper1.jpg'), id: 3, title: 'Paper' },
+    { img: require('../../assets/paper1.jpg'), id: 3, title: 'Papers' },
   ];
   const donate = [
     { img: require('../../assets/food.jpg'), id: 1, title: 'Food' },
     { img: require('../../assets/clothes1.jpg'), id: 2, title: 'Clothes' },
   ];
-  const modalShow = () => {
-    setModal(true);
-  }
 
-  const createTwoButtonAlert = () =>
+  const createTwoButtonAlert = (typ) =>
     Alert.alert(
       "Confirm",
-      `Are you sure you want to recycle ${type} waste ?`,
+      `You You chose ${typ}, Are you sure ?`,
       [
         {
           text: "Cancel",
@@ -45,7 +41,7 @@ const HomeScreen = () => {
           text: "Yes", onPress: () => {
             Popup.show({
               type: 'Success',
-              title: 'Request sent', // احمد غير هاد العنوان مش عارفة شو احطو انا 
+              title: 'Request sent', 
               button: true,
               textBody: 'One of our workers will contact you to get more information for your visit soon',
               buttontext: 'Ok',
@@ -88,8 +84,8 @@ const HomeScreen = () => {
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => {
-                setType(item.title)
-                createTwoButtonAlert();
+                // setType(item.title)
+                createTwoButtonAlert(item.title);
               }}
             >
               <Card>
@@ -106,7 +102,7 @@ const HomeScreen = () => {
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => {
               setType(item.title)
-              createTwoButtonAlert();
+              createTwoButtonAlert(item.title);
             }}>
               <Card>
                 <Image source={item.img} style={styles.types} />
