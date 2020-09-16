@@ -11,7 +11,7 @@ const AccountScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView forceInset={{ top: 'always' }}>
-      <Text style={{ fontSize: 48, marginTop:20 }}>Profile</Text>
+      <Text style={{ fontSize: 48, marginTop:20, color:'green' }}>Profile</Text>
       <Image
         source={require('../../assets/profile-pic.jpg')}
         style={{ width: 250, height: 250, borderRadius: 250 / 2, alignSelf:'center' }}
@@ -31,7 +31,7 @@ const AccountScreen = ({ navigation }) => {
       <Text  style={styles.center} >balance</Text>
       </View>
       <Spacer>
-        <Button color="#ea5d5d" title="Sign Out" onPress={signout} />
+        <Button color='#db0a0a' title="Sign Out" onPress={signout} />
       </Spacer>
     </SafeAreaView>
   );

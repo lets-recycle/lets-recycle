@@ -1,7 +1,6 @@
 import React, { useState, useContext ,useEffect} from 'react';
-import { View, StyleSheet, Text,ScrollView } from 'react-native';
+import { View, StyleSheet, Text,ScrollView,Button } from 'react-native';
 import { Input } from 'react-native-elements';
-import { Button } from 'react-native-elements';
 import { SafeAreaView } from 'react-navigation';
 import Spacer from '../components/Spacer';
 import { Context as AuthContext } from '../context/AuthContext';
@@ -49,8 +48,8 @@ useEffect(() => {
   return (
     <ScrollView>
     <SafeAreaView forceInset={{ top: 'always' } } style={{flex:1}}>
-      <Text style={{ fontSize: 48 }}>EditScreen</Text>
-      <Text >name : {state.user.displayName || ''}</Text>
+      <Text style={styles.txt}>Edit Profile</Text>
+      {/* <Text >name : {state.user.displayName || ''}</Text> */}
       <Spacer />
       <Input
         label="name"
@@ -60,7 +59,7 @@ useEffect(() => {
         autoCorrect={false}
       />
       <Spacer />
-      <Text >phoneNumber : {state.user.phoneNumber || ''}</Text>
+      {/* <Text >phoneNumber : {state.user.phoneNumber || ''}</Text> */}
       <Spacer />
       <Input
         label="phoneNumber"
@@ -69,11 +68,13 @@ useEffect(() => {
         autoCapitalize="none"
         autoCorrect={false}
       />
+      {/* here you shoud update the profile pic */}
       <Spacer />
       <Text style={styles.paragraph}>{text}</Text>
       <Spacer>
-        <Button title="Save and Back" onPress={() => update({ displayName: name, phoneNumber: phone,location:text })} />
-        <Button title="Cancel" onPress={() =>
+        <Button color='#008000' title="Save and Back" onPress={() => update({ displayName: name, phoneNumber: phone,location:text })} />
+        <Spacer />
+        <Button color='#db0a0a' title="Cancel" onPress={() =>
           navigation.navigate('Profile')} />
       </Spacer>
     </SafeAreaView>
@@ -92,6 +93,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
   },
+  txt:{
+    color: 'green',
+    fontSize: 48,
+    marginTop:20 
+  }
 });
 
 export default EditScreen;
