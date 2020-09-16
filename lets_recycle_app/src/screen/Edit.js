@@ -7,6 +7,7 @@ import { Context as AuthContext } from '../context/AuthContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 import * as Location from 'expo-location';
+// import MapView from 'react-native-maps'
 
 const EditScreen = ({ navigation }) => {
   const { update, state } = useContext(AuthContext);
@@ -33,10 +34,8 @@ useEffect(() => {
       })();
       
     }
-    console.log('shof')
   },[]);
   useEffect(()=>{
-    console.log('shof',errorMsg,location)
     if (errorMsg) {
       setText(errorMsg);
     } else if (location) {
@@ -49,7 +48,6 @@ useEffect(() => {
     <ScrollView>
     <SafeAreaView forceInset={{ top: 'always' } } style={{flex:1}}>
       <Text style={styles.txt}>Edit Profile</Text>
-      {/* <Text >name : {state.user.displayName || ''}</Text> */}
       <Spacer />
       <Input
         label="name"
@@ -59,7 +57,6 @@ useEffect(() => {
         autoCorrect={false}
       />
       <Spacer />
-      {/* <Text >phoneNumber : {state.user.phoneNumber || ''}</Text> */}
       <Spacer />
       <Input
         label="phoneNumber"

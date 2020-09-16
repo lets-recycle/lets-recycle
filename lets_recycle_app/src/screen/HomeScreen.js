@@ -6,7 +6,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { Context as AuthContext } from '../context/AuthContext';
 
 
-import { StyleSheet, Text, View, FlatList,Alert, Image, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, FlatList, Alert, Image, TouchableOpacity } from 'react-native';
 import Card from '../components/Card'
 
 import { Root, Popup } from 'popup-ui';
@@ -14,7 +14,9 @@ import { Root, Popup } from 'popup-ui';
 const API = 'https://lets-recycle-67594.firebaseio.com'
 
 const HomeScreen = () => {
-  const { state } = useContext(AuthContext);
+  // const { state } = useContext(AuthContext);
+  const { update, state } = useContext(AuthContext);
+
   const [type, setType] = useState('');
 
   const wasteTypes = [
@@ -30,7 +32,7 @@ const HomeScreen = () => {
   const createTwoButtonAlert = (typ) =>
     Alert.alert(
       "Confirm",
-      `You You chose ${typ}, Are you sure ?`,
+      `You chose ${typ}, Are you sure ?`,
       [
         {
           text: "Cancel",
@@ -41,11 +43,11 @@ const HomeScreen = () => {
           text: "Yes", onPress: () => {
             Popup.show({
               type: 'Success',
-              title: 'Request sent', 
+              title: 'Request sent',
               button: true,
               textBody: 'One of our workers will contact you to get more information for your visit soon',
               buttontext: 'Ok',
-              callback: () => Popup.hide()
+              callback: () => order(typ)
             })
           }
         }
@@ -54,6 +56,7 @@ const HomeScreen = () => {
     );
 
   const order = (category) => {
+    Popup.hide();
     (async () => {
       await fetch(`${API}/orders.json`, {
         method: 'POST',
@@ -68,9 +71,10 @@ const HomeScreen = () => {
           "location": state.user.location,
           "phoneNumber": state.user.phoneNumber,
           "categories": category
-
         })
       });
+      update({ balance: `${Number(state.user.balance) + 1}` })
+
     })();
   }
 
@@ -78,7 +82,7 @@ const HomeScreen = () => {
   return (
     <Root>
       <View style={styles.container}>
-    <FlatList
+        <FlatList
           numColumns={2}
           data={wasteTypes}
           renderItem={({ item }) => (

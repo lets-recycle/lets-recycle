@@ -102,7 +102,27 @@ const signin = dispatch => async ({ email, password }) => {
         // if a user forgets to sign out.
         // ...
         // New sign-in will be persisted with session persistence.
-        await firebase.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
+        await firebase.auth().signInWithEmailAndPassword(email, password).then(()=>{
+
+          let user = firebase.auth().currentUser;
+          dispatch({ type: 'signin', payload: firebase.auth().currentUser });
+          (async () => {
+            let results = await fetch(`${API}/users.json?orderBy="id"&equalTo="${user.uid}"`, {
+              method: 'GET',
+              mode: 'cors',
+              headers: new Headers({
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+              }),
+            });
+            let res = await results.json();
+            dispatch({ type: 'addToUser', payload: res[Object.keys(res)[0]] });
+  
+          })();
+          navigate('Home');
+
+
+        }).catch(function (error) {
           console.log("fail");
           dispatch({
             type: 'add_error',
@@ -111,28 +131,13 @@ const signin = dispatch => async ({ email, password }) => {
         });
         // console.log("done");
         // console.log("token", firebase.auth().currentUser)
-        let user = firebase.auth().currentUser;
-        dispatch({ type: 'signin', payload: firebase.auth().currentUser });
-        (async () => {
-          let results = await fetch(`${API}/users.json?orderBy="id"&equalTo="${user.uid}"`, {
-            method: 'GET',
-            mode: 'cors',
-            headers: new Headers({
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            }),
-          });
-          let res = await results.json();
-          dispatch({ type: 'addToUser', payload: res[Object.keys(res)[0]] });
 
-        })();
       })
       .catch(function (error) {
         // Handle Errors here.
         var errorCode = error.code;
         var errorMessage = error.message;
       });
-    navigate('Home');
   } catch (err) {
     dispatch({
       type: 'add_error',
